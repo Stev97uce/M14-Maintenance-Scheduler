@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  maintenance-scheduler:
+    build: .
+    container_name: maintenance-scheduler
+    depends_on:
+      - mongo
+      - cassandra
+    ports:
+      - "8083:8083"
+    env_file:
+      - .env
+    networks:
+      - lavanet
+
+  mongo:
+    image: mongo:6
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - lavanet
+
+  cassandra:
+    image: cassandra:4.1
+    container_name: cassandra
+    ports:
+      - "9042:9042"
+    volumes:
+      - cassandra_data:/var/lib/cassandra
+    networks:
+      - lavanet
+
+networks:
+  lavanet:
+    driver: bridge
+
+volumes:
+  mongo_data:
+  cassandra_data:
